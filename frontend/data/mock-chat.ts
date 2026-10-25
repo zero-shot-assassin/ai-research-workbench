@@ -29,10 +29,6 @@ export const sources: Source[] = [
     },
 ];
 
-const source: Source = sources[1];
-if (source.url !== undefined) {
-    console.log(source.url.toUpperCase());
-}
-else {
-    console.log('No source URL available');
+export function getAssistantMessages(items: Message[]): Message[] {
+    return items.filter((item) => item.role === 'assistant');
 }
