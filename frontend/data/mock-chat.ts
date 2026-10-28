@@ -28,7 +28,3 @@ export const sources: Source[] = [
         excerpt: 'RAG can be implemented using various techniques and frameworks.',
     },
 ];
-
-export function getAssistantMessages(items: Message[]): Message[] {
-    return items.filter((item) => item.role === 'assistant');
-}

@@ -8,10 +8,9 @@ type QuestionInputProps = {
 
 export function QuestionInput({ onSubmit }: QuestionInputProps) {
     const [question, setQuestion] = useState("");
+    const trimmedQuestion = question.trim();
 
     function handleSubmit() {
-        const trimmedQuestion = question.trim();
-
         if (trimmedQuestion.length === 0) {
             return;
         }
@@ -33,7 +32,7 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
 
             <button 
               type="button" 
-              disabled={question.trim().length === 0} 
+              disabled={trimmedQuestion.length === 0} 
               className="bg-blue-500 text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleSubmit}
             >
