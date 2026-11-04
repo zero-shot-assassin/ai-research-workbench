@@ -21,23 +21,25 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
 
     return (
         <div className="w-full">
-            <label htmlFor="research-question">Research question</label>
-            <textarea 
-                id="research-question" 
-                placeholder="Ask a research question..." 
-                className="w-full border border-gray-200 dark:border-gray-700 rounded-lg p-2"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-            />
-
-            <button 
-              type="button" 
-              disabled={trimmedQuestion.length === 0} 
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={handleSubmit}
-            >
-              Ask
-            </button>
+            <label htmlFor="research-question" className="sr-only">Research question</label>
+            <div className="flex items-center gap-2 rounded-xl border border-stone-300 bg-stone-50 px-4 py-2.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100">
+                <textarea
+                    id="research-question"
+                    placeholder="Ask a research question..."
+                    rows={1}
+                    className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-stone-400"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                />
+                <button
+                    type="button"
+                    disabled={trimmedQuestion.length === 0}
+                    className="flex h-8 items-center justify-center rounded-lg bg-stone-900 px-4 text-sm font-medium text-white hover:bg-stone-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={handleSubmit}
+                >
+                    Ask
+                </button>
+            </div>
         </div>
     );
 }

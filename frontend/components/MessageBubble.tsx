@@ -5,15 +5,21 @@ type MessageBubbleProps = {
 };
 
 export function MessageBubble({ message }: MessageBubbleProps) {
+    if (message.role === 'user') {
+        return (
+            <div className="flex justify-end">
+                <div className="max-w-[70%] rounded-2xl rounded-br-sm border border-stone-200 bg-white px-4 py-3 text-sm shadow-sm">
+                    {message.content}
+                </div>
+            </div>
+        );
+    }
     return (
-        <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                    <span className="text-sm font-semibold">{message.role === 'user' ? 'U' : 'AI'}</span>
-                </div>
-                <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
-                    <p className="text-sm">{message.content}</p>
-                </div>
+        <div className="flex gap-3">
+            <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">✦</div>
+            <div className="max-w-[75%] text-sm leading-relaxed">
+                <p className="text-[10px] font-medium uppercase tracking-widest text-stone-400">Research assistant</p>
+                <p className="mt-1">{message.content}</p>
             </div>
         </div>
     );
