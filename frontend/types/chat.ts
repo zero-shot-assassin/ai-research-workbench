@@ -9,4 +9,6 @@ export type Source = {
   title: string;
   excerpt: string;
   url?: string;
+  kind?: string;
+  author?: string;
 };

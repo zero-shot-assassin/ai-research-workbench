@@ -1,4 +1,5 @@
 import type { Message } from "@/types/chat";
+import { Eyebrow } from "@/components/Eyebrow";
 
 type MessageBubbleProps = {
     message: Message;
@@ -18,7 +19,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         <div className="flex gap-3">
             <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">✦</div>
             <div className="max-w-[75%] text-sm leading-relaxed">
-                <p className="text-[10px] font-medium uppercase tracking-widest text-stone-400">Research assistant</p>
+                <Eyebrow>Research assistant</Eyebrow>
                 <p className="mt-1">{message.content}</p>
             </div>
         </div>

@@ -18,13 +18,25 @@ export const messages: Message[] = [
 export const sources: Source[] = [
     {
         id: 'source-1',
-        title: 'RAG Overview',
-        excerpt: 'RAG is a technique for retrieving information from a knowledge base.',
+        title: 'Attention Is All You Need',
+        author: 'Vaswani et al. · 2017',
+        excerpt: 'The Transformer relies entirely on attention mechanisms, dispensing with recurrence and...',
         url: '#',
+        kind: 'Research paper',
     },
     {
         id: 'source-2',
-        title: 'RAG Implementation',
-        excerpt: 'RAG can be implemented using various techniques and frameworks.',
+        title: 'Language Models are Few-Shot Learners',
+        author: 'Brown et al. · 2020',
+        excerpt: 'Scaling up language models greatly improves task-agnostic, few-shot performance...',
+        kind: 'Journal article',
+    },
+    {
+        id: 'source-3',
+        title: 'Retrieval-Augmented Generation',
+        author: 'Lewis et al. · 2020',
+        excerpt: 'Retrieval combines parametric and non-parametric memory for knowledge-intensive NL...',
+        url: '#',
+        kind: 'Technical report',
     },
 ];
