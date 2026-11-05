@@ -6,9 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 
 type QuestionInputProps = {
     onSubmit: (question: string) => void;
+    isLoading: boolean;
 }
 
-export function QuestionInput({ onSubmit }: QuestionInputProps) {
+export function QuestionInput({ onSubmit, isLoading }: QuestionInputProps) {
     const [question, setQuestion] = useState("");
     const trimmedQuestion = question.trim();
 
@@ -32,10 +33,16 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
                     className="min-h-0 flex-1 resize-none border-0 bg-transparent px-0 py-0 text-sm shadow-none focus-visible:border-transparent focus-visible:ring-0 placeholder:text-stone-400"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSubmit();
+                        }
+                    }}
                 />
                 <Button
                     type="button"
-                    disabled={trimmedQuestion.length === 0}
+                    disabled={isLoading || trimmedQuestion.length === 0}
                     onClick={handleSubmit}
                 >
                     Ask

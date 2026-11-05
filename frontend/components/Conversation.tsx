@@ -11,18 +11,49 @@ type ConversationProps = {
 };
 
 export function Conversation({ initialMessages }: ConversationProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const threadTitle =
     messages.find((message) => message.role === "user")?.content
     ?? "New research thread";
 
+  function appendAssistantReply(): void {
+    setMessages((prev) => [...prev, {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: "This is a mock answer — the real one will stream from FastAPI in Week 3.",
+    }]);
+  }
+
   function handleQuestionSubmit(question: string): void {
-    const newMessage: Message = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: question,
-    };
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => [...prev, {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: question,
+    }]);
+    setError(null);
+    setIsLoading(true);
+
+    setTimeout(() => {
+        if (question.toLowerCase().includes("error")) {
+            setError("Something went wrong while generating the answer.");
+        } else {
+            appendAssistantReply();
+        }
+        setIsLoading(false);
+    }, 1500);
+  }
+
+  function handleRetry(): void {
+    const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
+    setError(null);
+    if (!lastUserMessage) return;
+    setIsLoading(true);
+    setTimeout(() => {
+        appendAssistantReply();
+        setIsLoading(false);
+    }, 1500);
   }
 
   return (
@@ -43,8 +74,23 @@ export function Conversation({ initialMessages }: ConversationProps) {
             <MessageBubble key={message.id} message={message} />
           ))
         )}
+        {isLoading && (
+          <div className="flex gap-3">
+            <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">✦</div>
+            <div className="text-sm leading-relaxed">
+              <Eyebrow>Research assistant</Eyebrow>
+              <p className="mt-1">Thinking<span className="ml-1 inline-block h-4 w-1.5 animate-pulse bg-indigo-500 align-middle"></span></p>
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}{" "}
+            <button className="font-medium underline" onClick={handleRetry}>Try again</button>
+          </div>
+        )}
       </div>
-      <QuestionInput onSubmit={handleQuestionSubmit} />
+      <QuestionInput onSubmit={handleQuestionSubmit} isLoading={isLoading} />
     </>
   );
 }
