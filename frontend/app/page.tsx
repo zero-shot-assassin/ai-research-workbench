@@ -16,7 +16,19 @@ export default function Home() {
 
           {/* Conversation */}
           <Conversation initialMessages={initialMessages} />
-        
+
+          {/* Sources — mobile disclosure (aside covers md+) */}
+          <details className="md:hidden rounded-lg border border-stone-200 bg-white p-3">
+            <summary className="cursor-pointer text-sm font-medium">
+              Sources ({sources.length})
+            </summary>
+            <div className="mt-3 space-y-3">
+              {sources.map((source, index) => (
+                <SourceCard key={source.id} source={source} index={index} />
+              ))}
+            </div>
+          </details>
+
         </main>
 
         {/* Sources panel */}
