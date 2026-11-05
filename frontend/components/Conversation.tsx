@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MessageBubble } from "@/components/MessageBubble";
 import { QuestionInput } from "@/components/QuestionInput";
+import { Eyebrow } from "@/components/Eyebrow";
 import type { Message } from "@/types/chat";
 
 type ConversationProps = {
@@ -11,6 +12,9 @@ type ConversationProps = {
 
 export function Conversation({ initialMessages }: ConversationProps) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const threadTitle =
+    messages.find((message) => message.role === "user")?.content
+    ?? "New research thread";
 
   function handleQuestionSubmit(question: string): void {
     const newMessage: Message = {
@@ -23,6 +27,10 @@ export function Conversation({ initialMessages }: ConversationProps) {
 
   return (
     <>
+      <div className="shrink-0 border-b border-stone-200 pb-4">
+        <Eyebrow>Research thread</Eyebrow>
+        <h2 className="mt-0.5 text-xl font-semibold">{threadTitle}</h2>
+      </div>
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">

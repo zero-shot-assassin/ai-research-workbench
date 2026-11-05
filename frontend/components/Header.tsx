@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 type HeaderProps = {
     title: string;
     sourceCount: number;
@@ -16,9 +18,7 @@ export function Header({ title, sourceCount }: HeaderProps) {
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                     {sourceCount} sources indexed
                 </span>
-                <button type="button" className="rounded-md bg-stone-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-stone-700">
-                    + New thread
-                </button>
+                <Button type="button" size="sm">+ New thread</Button>
             </div>
         </header>
     );

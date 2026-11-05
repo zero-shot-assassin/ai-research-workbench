@@ -12,7 +12,7 @@ export default function Home() {
       {/* Sibling row: conversation + sources */}
       <div className="flex min-h-0 flex-1">
 
-        <main className="mx-auto flex w-full max-w-3xl min-h-0 flex-1 flex-col gap-4 px-4 sm:px-8 py-6 bg-white">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 bg-white px-4 py-6 sm:px-8">
 
           {/* Conversation */}
           <Conversation initialMessages={initialMessages} />
