@@ -5,6 +5,8 @@ import { MessageBubble } from "@/components/MessageBubble";
 import { QuestionInput } from "@/components/QuestionInput";
 import { Eyebrow } from "@/components/Eyebrow";
 import type { Message } from "@/types/chat";
+import { askChat } from "@/lib/api";
+import type { ChatRequestMessage } from "@/types/api";
 
 type ConversationProps = {
   initialMessages: Message[];
@@ -18,42 +20,38 @@ export function Conversation({ initialMessages }: ConversationProps) {
     messages.find((message) => message.role === "user")?.content
     ?? "New research thread";
 
-  function appendAssistantReply(): void {
-    setMessages((prev) => [...prev, {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: "This is a mock answer — the real one will stream from FastAPI in Week 3.",
-    }]);
+  async function requestAnswer(currentMessages: Message[]): Promise<void> {
+    setIsLoading(true);
+    setError(null);
+    try {
+        const wireMessages: ChatRequestMessage[] = currentMessages.map(
+            ({ role, content }) => ({ role, content })
+        );
+        const response = await askChat(wireMessages);
+        setMessages((prev) => [...prev, {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: response.answer,
+        }]);
+    } catch {
+        setError("Something went wrong while generating the answer.");
+    } finally {
+        setIsLoading(false);
+    }
   }
 
-  function handleQuestionSubmit(question: string): void {
-    setMessages((prev) => [...prev, {
+  async function handleQuestionSubmit(question: string): Promise<void> {
+    const nextMessages = [...messages, {
         id: crypto.randomUUID(),
-        role: "user",
+        role: "user" as const,
         content: question,
-    }]);
-    setError(null);
-    setIsLoading(true);
-
-    setTimeout(() => {
-        if (question.toLowerCase().includes("error")) {
-            setError("Something went wrong while generating the answer.");
-        } else {
-            appendAssistantReply();
-        }
-        setIsLoading(false);
-    }, 1500);
+    }];
+    setMessages(nextMessages);
+    await requestAnswer(nextMessages);
   }
 
-  function handleRetry(): void {
-    const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
-    setError(null);
-    if (!lastUserMessage) return;
-    setIsLoading(true);
-    setTimeout(() => {
-        appendAssistantReply();
-        setIsLoading(false);
-    }, 1500);
+  async function handleRetry(): Promise<void> {
+    await requestAnswer(messages);
   }
 
   return (
