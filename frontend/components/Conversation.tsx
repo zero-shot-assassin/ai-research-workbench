@@ -5,7 +5,7 @@ import { MessageBubble } from "@/components/MessageBubble";
 import { QuestionInput } from "@/components/QuestionInput";
 import { Eyebrow } from "@/components/Eyebrow";
 import type { Message } from "@/types/chat";
-import { askChat } from "@/lib/api";
+import { streamChat } from "@/lib/api";
 import type { ChatRequestMessage } from "@/types/api";
 
 type ConversationProps = {
@@ -27,12 +27,20 @@ export function Conversation({ initialMessages }: ConversationProps) {
         const wireMessages: ChatRequestMessage[] = currentMessages.map(
             ({ role, content }) => ({ role, content })
         );
-        const response = await askChat(wireMessages);
+        const assistantId = crypto.randomUUID();
         setMessages((prev) => [...prev, {
-            id: crypto.randomUUID(),
+            id: assistantId,
             role: "assistant",
-            content: response.answer,
+            content: "",
         }]);
+
+        let accumulated = "";
+        for await (const chunk of streamChat(wireMessages)) {
+            accumulated += chunk;
+            setMessages((prev) =>
+              prev.map(m => (m.id === assistantId ? { ...m, content: accumulated } : m))
+            );
+        }
     } catch {
         setError("Something went wrong while generating the answer.");
     } finally {
@@ -72,7 +80,7 @@ export function Conversation({ initialMessages }: ConversationProps) {
             <MessageBubble key={message.id} message={message} />
           ))
         )}
-        {isLoading && (
+        {isLoading && messages[messages.length - 1]?.role === "user" && (
           <div className="flex gap-3">
             <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">✦</div>
             <div className="text-sm leading-relaxed">
