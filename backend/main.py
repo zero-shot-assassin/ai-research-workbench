@@ -42,6 +42,7 @@ async def chat_stream(request: StreamChatRequest) -> StreamingResponse:
         "messages": to_anthropic_messages(request.messages),
         "max_tokens": 1024,
         "anthropic_version": "bedrock-2023-05-31",
+        "tools": [{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}],
     }
     try:
         response = await asyncio.to_thread(
