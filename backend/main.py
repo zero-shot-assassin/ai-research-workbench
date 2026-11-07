@@ -7,7 +7,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
-from schemas import StreamChatRequest
+from schemas import StreamChatRequest, SourceOut
+from retrieval import latest_sources, SourceCollector
 
 app = FastAPI(title="AI Research Workbench API")
 
@@ -38,6 +39,8 @@ def health() -> dict[str, str]:
 
 @app.post("/chat/stream")
 async def chat_stream(request: StreamChatRequest) -> StreamingResponse:
+    collector = SourceCollector()
+
     body = {
         "messages": to_anthropic_messages(request.messages),
         "max_tokens": 1024,
@@ -71,7 +74,14 @@ async def chat_stream(request: StreamChatRequest) -> StreamingResponse:
             if event is None:
                 break
             chunk = json.loads(event["chunk"]["bytes"])
+            collector.process(chunk)
             if chunk.get("type") == "content_block_delta":
                 yield chunk["delta"].get("text", "")
 
+        latest_sources[:] = collector.list()
+
     return StreamingResponse(tokens(), media_type="text/plain")
+
+@app.get("/sources")
+def get_sources() -> list[SourceOut]:
+    return latest_sources
