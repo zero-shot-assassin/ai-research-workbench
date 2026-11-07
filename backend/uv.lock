@@ -57,12 +57,16 @@ source = { virtual = "." }
 dependencies = [
     { name = "boto3" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx" },
+    { name = "python-dotenv" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "boto3", specifier = ">=1.43.126" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.162.0" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "python-dotenv", specifier = ">=1.2.4" },
 ]
 
 [[package]]

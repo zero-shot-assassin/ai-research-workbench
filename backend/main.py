@@ -3,12 +3,15 @@ import json
 import os
 import boto3
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from schemas import StreamChatRequest, SourceOut
-from retrieval import latest_sources, SourceCollector
+from retrieval import latest_sources, sources_as_context, tavily_search
+
+load_dotenv()
 
 app = FastAPI(title="AI Research Workbench API")
 
@@ -39,13 +42,20 @@ def health() -> dict[str, str]:
 
 @app.post("/chat/stream")
 async def chat_stream(request: StreamChatRequest) -> StreamingResponse:
-    collector = SourceCollector()
+    anthropic_messages = to_anthropic_messages(request.messages)
+    question = anthropic_messages[-1]["content"][0]["text"]
+
+    sources = await asyncio.to_thread(tavily_search, question)
+    latest_sources[:] = sources
 
     body = {
-        "messages": to_anthropic_messages(request.messages),
+        "messages": anthropic_messages,
         "max_tokens": 1024,
         "anthropic_version": "bedrock-2023-05-31",
-        "tools": [{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}],
+        "system": (
+            "Answer using the numbered web sources below where relevant, "
+            "and cite them inline as [n].\n\n" + sources_as_context(sources)
+        ),
     }
     try:
         response = await asyncio.to_thread(
@@ -74,11 +84,8 @@ async def chat_stream(request: StreamChatRequest) -> StreamingResponse:
             if event is None:
                 break
             chunk = json.loads(event["chunk"]["bytes"])
-            collector.process(chunk)
             if chunk.get("type") == "content_block_delta":
                 yield chunk["delta"].get("text", "")
-
-        latest_sources[:] = collector.list()
 
     return StreamingResponse(tokens(), media_type="text/plain")
 
