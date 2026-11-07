@@ -16,3 +16,15 @@ class SourceOut(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     sources: list[SourceOut] = []
+
+class MessagePart(BaseModel):
+    type: str
+    text: str | None = None
+
+class UIChatMessage(BaseModel):
+    id: str
+    role: Literal["user", "assistant"]
+    parts: list[MessagePart]
+
+class StreamChatRequest(BaseModel):
+    messages: list[UIChatMessage]

@@ -4,7 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
-from schemas import ChatRequest, ChatResponse
+from schemas import (
+    ChatRequest, ChatResponse, StreamChatRequest
+)
 
 app = FastAPI(title="AI Research Workbench API")
 
@@ -39,5 +41,5 @@ def chat(request: ChatRequest) -> ChatResponse:
     )
 
 @app.post("/chat/stream")
-async def chat_stream(request: ChatRequest) -> StreamingResponse:
+async def chat_stream(request: StreamChatRequest) -> StreamingResponse:
     return StreamingResponse(answer_words(), media_type="text/plain")

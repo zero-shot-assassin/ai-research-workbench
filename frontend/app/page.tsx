@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import { SourceCard } from "@/components/SourceCard";
 import { Conversation } from "@/components/Conversation";
-import { messages as initialMessages, sources } from "@/data/mock-chat";
+import { sources } from "@/data/mock-chat";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
         <main className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 bg-white px-4 py-6 sm:px-8">
 
           {/* Conversation */}
-          <Conversation initialMessages={initialMessages} />
+          <Conversation />
 
           {/* Sources — mobile disclosure (aside covers md+) */}
           <details className="md:hidden rounded-lg border border-stone-200 bg-white p-3">
