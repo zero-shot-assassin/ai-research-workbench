@@ -1,8 +1,9 @@
+import asyncio
 import json
 import os
 import boto3
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
@@ -42,13 +43,32 @@ async def chat_stream(request: StreamChatRequest) -> StreamingResponse:
         "max_tokens": 1024,
         "anthropic_version": "bedrock-2023-05-31",
     }
-    response = bedrock_runtime.invoke_model_with_response_stream(
-        modelId=BEDROCK_MODEL_ID,
-        body=json.dumps(body),
-    )
+    try:
+        response = await asyncio.to_thread(
+            bedrock_runtime.invoke_model_with_response_stream,
+            modelId=BEDROCK_MODEL_ID,
+            body=json.dumps(body),
+        )
+    except Exception:
+        raise HTTPException(status_code=502, detail="Model request failed")
 
     async def tokens():
-        for event in response["body"]:
+        loop = asyncio.get_running_loop()
+        queue: asyncio.Queue = asyncio.Queue()
+
+        def worker():
+            try:
+                for event in response["body"]:
+                    loop.call_soon_threadsafe(queue.put_nowait, event)
+            finally:
+                loop.call_soon_threadsafe(queue.put_nowait, None)
+
+        loop.run_in_executor(None, worker)
+
+        while True:
+            event = await queue.get()
+            if event is None:
+                break
             chunk = json.loads(event["chunk"]["bytes"])
             if chunk.get("type") == "content_block_delta":
                 yield chunk["delta"].get("text", "")
