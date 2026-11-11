@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { SourceCount } from "@/components/SourceCount";
 
 type HeaderProps = {
     title: string;
-    sourceCount: number;
 };
 
-export function Header({ title, sourceCount }: HeaderProps) {
+export function Header({ title }: HeaderProps) {
     return (
         <header className="flex h-14 items-center justify-between border-b border-stone-200 bg-white px-5">
             <div className="flex items-center gap-2.5">
@@ -16,7 +16,7 @@ export function Header({ title, sourceCount }: HeaderProps) {
             <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1.5 text-xs text-stone-500">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                    {sourceCount} sources indexed
+                    <SourceCount /> sources found
                 </span>
                 <Button type="button" size="sm">+ New thread</Button>
             </div>

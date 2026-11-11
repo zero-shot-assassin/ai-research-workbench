@@ -1,4 +1,5 @@
 import type { ChatRequestMessage } from "@/types/api";
+import type { ApiSource } from "@/types/api";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -21,4 +22,12 @@ export async function* streamChat(messages: ChatRequestMessage[]): AsyncGenerato
     if (done) break;
     yield decoder.decode(value, { stream: true });
   }
+}
+
+export async function getSources(): Promise<ApiSource[]> {
+  const response = await fetch(`${API_URL}/sources`);
+  if (!response.ok) {
+    throw new Error(`Sources request failed: ${response.status}`);
+  }
+  return response.json();
 }

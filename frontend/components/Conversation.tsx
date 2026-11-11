@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport, type UIMessage } from "ai";
 import { MessageBubble } from "@/components/MessageBubble";
@@ -24,6 +25,14 @@ function toMessage(uiMessage: UIMessage): Message {
 
 export function Conversation() {
   const { messages, sendMessage, status, error, regenerate } = useChat({ transport });
+
+  const prevStatus = useRef(status);
+  useEffect(() => {
+    if (prevStatus.current !== "ready" && status === "ready") {
+      window.dispatchEvent(new Event("answer-complete"));
+    }
+    prevStatus.current = status;
+  }, [status]);
 
   const displayMessages: Message[] = messages.map(toMessage);
   const threadTitle =

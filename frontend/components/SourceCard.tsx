@@ -26,7 +26,14 @@ export function SourceCard({ source, index }: SourceCardProps) {
             <CardContent>
                 <p className="text-xs leading-relaxed text-stone-600">{source.excerpt}</p>
                 {source.url !== undefined && (
-                    <a href={source.url} className="mt-2 inline-block text-xs font-medium text-indigo-600 hover:underline">View source →</a>
+                    <a
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-block text-xs font-medium text-indigo-600 hover:underline"
+                    >
+                        View source →
+                    </a>
                 )}
             </CardContent>
         </Card>

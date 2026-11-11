@@ -1,13 +1,13 @@
 import { Header } from "@/components/Header";
-import { SourceCard } from "@/components/SourceCard";
+import { SourceCount } from "@/components/SourceCount";
+import { SourcesPanel } from "@/components/SourcesPanel";
 import { Conversation } from "@/components/Conversation";
-import { sources } from "@/data/mock-chat";
 import { Eyebrow } from "@/components/Eyebrow";
 
 export default function Home() {
   return (
     <div className="flex h-screen flex-col bg-stone-50 font-sans">
-      <Header title="AI Research Workbench" sourceCount={sources.length} />
+      <Header title="AI Research Workbench" />
 
       {/* Sibling row: conversation + sources */}
       <div className="flex min-h-0 flex-1">
@@ -20,12 +20,10 @@ export default function Home() {
           {/* Sources — mobile disclosure (aside covers md+) */}
           <details className="md:hidden rounded-lg border border-stone-200 bg-white p-3">
             <summary className="cursor-pointer text-sm font-medium">
-              Sources ({sources.length})
+              Sources (<SourceCount />)
             </summary>
             <div className="mt-3 space-y-3">
-              {sources.map((source, index) => (
-                <SourceCard key={source.id} source={source} index={index} />
-              ))}
+              <SourcesPanel />
             </div>
           </details>
 
@@ -38,9 +36,7 @@ export default function Home() {
             <h2 className="mt-0.5 font-semibold">Sources</h2>
           </div>
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
-            {sources.map((source, index) => (
-              <SourceCard key={source.id} source={source} index={index} />
-            ))}
+            <SourcesPanel />
           </div>
         </aside>
 
