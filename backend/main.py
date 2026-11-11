@@ -45,7 +45,7 @@ def build_search_query(messages: list) -> str:
         modelId=BEDROCK_MODEL_ID,
         body=json.dumps({
             "anthropic_version": "bedrock-2023-05-31",
-            "max_tokens": 1024,
+            "max_tokens": 128,
             "system": (
                 "Rewrite the final user message as a standalone web search query. "
                 "Use the preceding conversation only to resolve references and "
@@ -83,7 +83,10 @@ async def chat_stream(request: StreamChatRequest) -> StreamingResponse:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to build search query: {str(e)}")
     
-    sources = await asyncio.to_thread(tavily_search, query)
+    try:
+        sources = await asyncio.to_thread(tavily_search, query)
+    except Exception:
+        raise HTTPException(status_code=502, detail="Search request failed")
     latest_sources[:] = sources
 
     body = {
