@@ -2,7 +2,7 @@
 
 A full-stack research assistant that answers questions grounded in live web search — streaming Claude's response token-by-token while showing the real sources it used.
 
-<!-- TODO: embed demo recording (GIF/MP4) showing: question → streaming answer → sources panel populating → follow-up question -->
+![Demo: ask a question, answer streams, sources populate, follow-up works](docs/assets/demo.gif)
 
 ## What it does
 
