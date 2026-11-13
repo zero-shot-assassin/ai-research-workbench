@@ -98,6 +98,5 @@ Deliberate decision: `/chat/stream` is an unauthenticated LLM proxy. Deployed pu
 ## Docs
 
 - [`docs/plan.md`](docs/plan.md) — the 30-day learning plan this was built from
-- [`docs/learning-progress.md`](docs/learning-progress.md) — day-by-day log of decisions and discoveries
 - [`docs/frontend-architecture.md`](docs/frontend-architecture.md) — component boundaries and data flow
 - [`docs/api-contract.md`](docs/api-contract.md) — request/response contracts
