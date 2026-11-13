@@ -130,16 +130,19 @@ def test_chat_stream_happy_path(
 @patch("main.tavily_search", side_effect=Exception("Tavily down"))
 def test_chat_stream_tavily_failure_returns_502(
     mock_tavily,
-    mock_rewrite,
-    client
+    mock_rewrite
 ):
     from fastapi.testclient import TestClient
     from main import app
 
-    # Let exceptions become HTTP responses instead of raising
-    response = TestClient(app, raise_server_exceptions=False).post(
+    response = TestClient(
+        app,
+        raise_server_exceptions=False
+    ).post(
         "/chat/stream",
         json=VALID
     )
 
     assert response.status_code == 502
+    mock_rewrite.assert_called_once()
+    mock_tavily.assert_called_once_with("rewritten")
