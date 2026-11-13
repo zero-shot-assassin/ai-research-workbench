@@ -12,9 +12,5 @@
 - Keep components small and focused.
 - Use clear variable and function names.
 - Explain important concepts when introducing new code.
-
-## Learning rules
-- Explain the purpose of new files and folders.
-- Teach concepts before introducing abstractions.
 - Avoid unnecessary dependencies and features.
 - Prefer simple, maintainable solutions.
